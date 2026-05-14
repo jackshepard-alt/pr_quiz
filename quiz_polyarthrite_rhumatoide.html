@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polyarthrite Rhumatoïde — Item 196</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --text: #1a1816;
+    --muted: #7a736a;
+    --accent: #c0392b;
+    --accent-light: #f9ecea;
+    --green: #1a6b3a;
+    --green-light: #e8f5ee;
+    --blue: #1a4a7a;
+    --blue-light: #e8f0f9;
+    --amber: #8a5a00;
+    --amber-light: #fdf3e0;
+    --border: #e0dbd4;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  header { background: var(--text); color: #fff; padding: 1.5rem 1.25rem 1.25rem; text-align: center; }
+  header h1 { font-family: 'DM Serif Display', serif; font-size: clamp(1.3rem, 5vw, 2rem); letter-spacing: -0.01em; }
+  header p { font-size: 0.85rem; opacity: 0.6; margin-top: 0.25rem; }
+
+  /* START SCREEN */
+  #screen-start { max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin: 1.5rem 0; }
+  .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-align: center; }
+  .stat-num { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: var(--accent); }
+  .stat-lbl { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+  .cat-list { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; }
+  .cat-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  .cat-row:last-child { border-bottom: none; }
+  .cat-tag { font-size: 0.75rem; background: var(--accent-light); color: var(--accent); padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  .mode-row { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .mode-btn { flex: 1; min-width: 120px; padding: 0.6rem 1rem; border: 1px solid var(--border); border-radius: 99px; background: var(--card); font-size: 0.85rem; cursor: pointer; color: var(--muted); font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+  .mode-btn.active { background: var(--text); color: #fff; border-color: var(--text); }
+  .btn-start { width: 100%; padding: 1rem; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 1rem; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: opacity 0.15s; letter-spacing: 0.01em; }
+  .btn-start:hover { opacity: 0.88; }
+
+  /* QUIZ SCREEN */
+  #screen-quiz { max-width: 600px; margin: 0 auto; padding: 1rem; display: none; }
+  .prog-wrap { margin: 1rem 0 0.5rem; }
+  .prog-bar { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.4s ease; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; }
+  .badge-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: 1rem 0 0.75rem; }
+  .badge { font-size: 0.72rem; padding: 3px 9px; border-radius: 99px; font-weight: 500; }
+  .badge-cat { background: var(--blue-light); color: var(--blue); }
+  .badge-rang-A { background: var(--green-light); color: var(--green); }
+  .badge-rang-B { background: var(--amber-light); color: var(--amber); }
+  .badge-rang-C { background: var(--accent-light); color: var(--accent); }
+  .badge-type { background: #f0eee8; color: var(--muted); }
+  .q-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; }
+  .q-text { font-size: 1rem; line-height: 1.65; font-weight: 500; }
+  .options { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1.25rem; }
+  .opt { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.9rem; text-align: left; cursor: pointer; font-family: 'DM Sans', sans-serif; color: var(--text); line-height: 1.5; transition: background 0.12s, border-color 0.12s; }
+  .opt:hover:not(:disabled) { background: #ede9e3; border-color: #c5bfb8; }
+  .opt.correct { background: var(--green-light); border-color: var(--green); color: var(--green); }
+  .opt.wrong { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+  .opt.reveal { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+  textarea.qroc { width: 100%; margin-top: 1rem; min-height: 90px; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--bg); resize: vertical; }
+  .feedback-box { border-radius: 8px; padding: 0.875rem 1rem; font-size: 0.875rem; line-height: 1.6; margin: 0.75rem 0; }
+  .feedback-ok { background: var(--green-light); border: 1px solid #a3d4b5; color: #0f4526; }
+  .feedback-ko { background: var(--accent-light); border: 1px solid #e8a89e; color: #7a1c12; }
+  .feedback-neutral { background: var(--blue-light); border: 1px solid #a3bedd; color: #0f2f54; }
+  .action-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.75rem; }
+  .btn { padding: 0.65rem 1.25rem; border-radius: 8px; font-size: 0.875rem; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; transition: opacity 0.12s; border: 1px solid var(--border); background: var(--card); color: var(--text); }
+  .btn:hover { opacity: 0.8; }
+  .btn-primary { background: var(--text); color: #fff; border-color: var(--text); }
+  .btn-success { background: var(--green); color: #fff; border-color: var(--green); }
+  .btn-danger { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* END SCREEN */
+  #screen-end { max-width: 600px; margin: 2rem auto; padding: 0 1rem; display: none; }
+  .score-hero { background: var(--text); color: #fff; border-radius: var(--radius); padding: 2rem; text-align: center; margin-bottom: 1.25rem; }
+  .score-big { font-family: 'DM Serif Display', serif; font-size: 3.5rem; }
+  .score-pct { font-size: 1rem; opacity: 0.6; margin-top: 0.25rem; }
+  .score-msg { font-size: 0.95rem; margin-top: 0.5rem; opacity: 0.85; }
+  .end-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
+  .end-cat { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.875rem; }
+  .end-cat-name { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.25rem; }
+  .end-cat-val { font-size: 1.1rem; font-weight: 500; }
+  .end-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .end-actions .btn { flex: 1; min-width: 140px; text-align: center; }
+
+  @media (max-width: 400px) {
+    .stat-grid { grid-template-columns: repeat(3,1fr); gap: 0.5rem; }
+    .stat-num { font-size: 1.4rem; }
+    .end-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Polyarthrite Rhumatoïde</h1>
+  <p>Item 196 · Rappel différé</p>
+</header>
+
+<!-- START -->
+<div id="screen-start">
+  <div class="stat-grid">
+    <div class="stat-box"><div class="stat-num">60</div><div class="stat-lbl">questions</div></div>
+    <div class="stat-box"><div class="stat-num">6</div><div class="stat-lbl">thèmes</div></div>
+    <div class="stat-box"><div class="stat-num">QCM<br>QROC</div><div class="stat-lbl">formats</div></div>
+  </div>
+  <div class="cat-list">
+    <div class="cat-row">Épidémiologie <span class="cat-tag">5 q.</span></div>
+    <div class="cat-row">Clinique &amp; diagnostic <span class="cat-tag">14 q.</span></div>
+    <div class="cat-row">Examens complémentaires <span class="cat-tag">10 q.</span></div>
+    <div class="cat-row">Phase d'état <span class="cat-tag">8 q.</span></div>
+    <div class="cat-row">Suivi &amp; pronostic <span class="cat-tag">8 q.</span></div>
+    <div class="cat-row">Traitement <span class="cat-tag">15 q.</span></div>
+  </div>
+  <div class="mode-row">
+    <button class="mode-btn active" onclick="setMode('all',this)">Tout (60 q.)</button>
+    <button class="mode-btn" onclick="setMode('qcm',this)">QCM uniquement</button>
+    <button class="mode-btn" onclick="setMode('qroc',this)">QROC uniquement</button>
+  </div>
+  <button class="btn-start" onclick="startQuiz()">Commencer →</button>
+</div>
+
+<!-- QUIZ -->
+<div id="screen-quiz">
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+    <div class="prog-meta"><span id="prog-label"></span><span id="prog-score"></span></div>
+  </div>
+  <div class="badge-row" id="badge-row"></div>
+  <div class="q-card">
+    <div class="q-text" id="q-text"></div>
+    <div id="q-body"></div>
+  </div>
+  <div id="feedback" style="display:none"></div>
+  <div class="action-row" id="actions"></div>
+</div>
+
+<!-- END -->
+<div id="screen-end">
+  <div class="score-hero">
+    <div class="score-big" id="final-score"></div>
+    <div class="score-pct" id="final-pct"></div>
+    <div class="score-msg" id="final-msg"></div>
+  </div>
+  <div class="end-grid" id="end-grid"></div>
+  <div class="end-actions">
+    <button class="btn btn-primary" onclick="restartAll()">↺ Tout recommencer</button>
+    <button class="btn btn-danger" onclick="restartWrong()">Revoir les erreurs</button>
+  </div>
+</div>
+
+<script>
+const ALL_Q = [
+{id:1,cat:"Épidémiologie",diff:"B",type:"qcm",q:"Quelle est la prévalence de la polyarthrite rhumatoïde en population générale adulte ?",opts:["0,01 à 0,05 %","0,3 à 0,8 %","1 à 2 %","5 à 10 %"],ans:1,exp:"La PR est le plus fréquent des rhumatismes inflammatoires chroniques, avec une prévalence de 0,3 à 0,8 %."},
+{id:2,cat:"Épidémiologie",diff:"B",type:"qcm",q:"Concernant le sex-ratio de la PR, quelle affirmation est exacte ?",opts:["Prédominance masculine à tout âge","Prédominance féminine avant 60 ans (3F/1H) avec atténuation progressive","Prédominance féminine uniforme à tout âge","Pas de différence de sexe"],ans:1,exp:"La prédominance féminine (3F/1H) s'atténue progressivement avec l'âge, surtout après 60 ans."},
+{id:3,cat:"Épidémiologie",diff:"B",type:"qcm",q:"Quel est l'âge moyen au diagnostic de la PR ?",opts:["30 ans","40 ans","50 ans","65 ans"],ans:2,exp:"L'âge moyen au diagnostic est de 50 ans. Forme juvénile < 16 ans, forme tardive > 65 ans."},
+{id:4,cat:"Épidémiologie",diff:"B",type:"qcm",q:"Parmi ces facteurs, lequel est un facteur de risque environnemental majeur de PR ?",opts:["Alcool","Tabac","Surpoids","Sédentarité"],ans:1,exp:"Le tabac est le principal facteur environnemental. Le microbiote buccal/intestinal est aussi impliqué."},
+{id:5,cat:"Épidémiologie",diff:"B",type:"qcm",q:"Quels gènes sont impliqués dans la susceptibilité génétique à la PR ?",opts:["HLA-B27, PTPN22","HLA-DRB1, PTPN22, STAT4","HLA-DQ2, STAT4","HLA-B51, PTPN22"],ans:1,exp:"Les principaux gènes de susceptibilité sont HLA-DRB1, PTPN22 et STAT4, en plus des ATCD familiaux de PR."},
+{id:6,cat:"Clinique & diagnostic",diff:"B",type:"qcm",q:"Quel est le critère clinique OBLIGATOIRE pour poser le diagnostic de PR ?",opts:["Raideur matinale > 30 min","Au moins 1 articulation gonflée (synovite clinique)","FR positif","CRP élevée"],ans:1,exp:"Le critère obligatoire est la présence d'au moins 1 articulation gonflée (synovite clinique)."},
+{id:7,cat:"Clinique & diagnostic",diff:"B",type:"qcm",q:"Quelle est la topographie articulaire préférentielle de la PR débutante ?",opts:["Hanches et épaules","Poignet, MCP, IPP, MTP","Genou et cheville","IPD et rachis lombaire"],ans:1,exp:"Topographie acromélique : Poignet – MCP – IPP – MTP. Les IPD sont épargnées."},
+{id:8,cat:"Clinique & diagnostic",diff:"B",type:"qcm",q:"Quelle est la durée minimale d'évolution requise pour évoquer une PR débutante ?",opts:["2 semaines","4 semaines","6 semaines","3 mois"],ans:2,exp:"L'évolution doit être supérieure à 6 semaines pour évoquer une PR."},
+{id:9,cat:"Clinique & diagnostic",diff:"B",type:"qcm",q:"La raideur matinale de la PR débutante dure en général :",opts:["Moins de 15 minutes","15 à 30 minutes","Plus de 30 minutes","Toute la journée"],ans:2,exp:"La raideur matinale est > 30 min. Elle fait partie des critères d'activité de la maladie."},
+{id:10,cat:"Clinique & diagnostic",diff:"B",type:"qcm",q:"Le 'squeeze test' explore quelle articulation en priorité ?",opts:["Les genoux","Les poignets","Les articulations des doigts (MCP/MTP) par compression latérale","Les épaules"],ans:2,exp:"Le squeeze test consiste en une pression latérale des doigts (MCP). La positivité oriente vers une PR."},
+{id:11,cat:"Clinique & diagnostic",diff:"B",type:"qcm",q:"Quelle forme clinique de PR est caractérisée par des poussées mono/oligo-articulaires récidivantes régressant en 2-3 jours sans séquelle ?",opts:["Forme rhizomélique","Forme palindromique","Forme polyarticulaire aiguë fébrile","Forme arthralgique"],ans:1,exp:"La forme palindromique est faite de poussées inflammatoires récidivantes, de périodicité variable, régressives sans séquelle."},
+{id:12,cat:"Clinique & diagnostic",diff:"B",type:"qcm",q:"Une atteinte rhizomélique (hanches + épaules) chez un patient > 65 ans doit faire évoquer en priorité :",opts:["Lupus érythémateux","Spondylarthropathie","Pseudopolyarthrite rhizomélique","Goutte"],ans:2,exp:"L'atteinte rhizomélique après 65 ans évoque en priorité une pseudopolyarthrite rhizomélique (PPR)."},
+{id:13,cat:"Clinique & diagnostic",diff:"B",type:"qcm",q:"Quelle pathologie est caractérisée par une arthrite NON ÉROSIVE à ne pas confondre avec la PR ?",opts:["Goutte","Lupus érythémateux disséminé","Spondylarthrite","Chondrocalcinose"],ans:1,exp:"Le lupus se caractérise par des arthralgies migratrices NON ÉROSIVES, contrairement à la PR."},
+{id:14,cat:"Clinique & diagnostic",diff:"B",type:"qcm",q:"Parmi les diagnostics différentiels, lequel présente typiquement des microcristaux dans le liquide articulaire ?",opts:["Lupus","Spondylarthrite","Polyarthrite microcristalline (goutte ou chondrocalcinose)","Polyarthrite virale"],ans:2,exp:"La polyarthrite microcristalline (goutte, chondrocalcinose) se distingue par la présence de microcristaux dans le liquide articulaire."},
+{id:15,cat:"Clinique & diagnostic",diff:"C",type:"qcm",q:"Dans la forme arthralgique (sans gonflement articulaire), quel signe clinique est associé à un risque élevé d'évolution vers une PR ?",opts:["Douleur nocturne uniquement","Raideur matinale > 60 min + squeeze test positif","Fièvre > 38°C","Atteinte des IPD"],ans:1,exp:"Les facteurs de risque d'évolution incluent : ATCD familial, MCP, raideur matinale > 60 min, gonflements, difficulté à serrer le poing, squeeze test positif."},
+{id:16,cat:"Clinique & diagnostic",diff:"B",type:"qroc",q:"Citez 4 facteurs de risque d'évolution vers une PR dans la forme arthralgique.",ans:"ATCD familial – Localisation MCP – Raideur matinale > 60 min – Gonflements articulaires – Difficulté à serrer le poing – Squeeze test positif",exp:"6 critères au total. En pratique, les retenir par groupe : famille + localisation + raideur + gonflements + fonctionnel."},
+{id:17,cat:"Clinique & diagnostic",diff:"B",type:"qroc",q:"Quelle articulation de la main est classiquement épargnée dans la PR ?",ans:"L'IPD (interphalangienne distale)",exp:"Les IPD sont épargnées dans la PR. Leur atteinte oriente vers un rhumatisme psoriasique ou une arthrose."},
+{id:18,cat:"Clinique & diagnostic",diff:"B",type:"qcm",q:"Une ténosynovite des extenseurs des doigts peut entraîner quel syndrome ?",opts:["Syndrome de Raynaud","Syndrome du canal carpien","Syndrome de De Quervain","Syndrome CRPS"],ans:1,exp:"Les ténosynovites (extenseurs, ulnaire du carpe, fléchisseurs) peuvent provoquer un syndrome du canal carpien."},
+{id:19,cat:"Examens complémentaires",diff:"B",type:"qcm",q:"Quel auto-anticorps est le plus SPÉCIFIQUE de la PR ?",opts:["Facteur rhumatoïde (FR)","ACPA (anti-CCP)","Anticorps antinucléaires (AAN)","Anti-ADN natif"],ans:1,exp:"Les ACPA ont une spécificité de 90-98 %, bien supérieure au FR (65-85 %). Ils sont aussi utiles au pronostic."},
+{id:20,cat:"Examens complémentaires",diff:"B",type:"qcm",q:"Quelle est la sensibilité et la spécificité du facteur rhumatoïde dans la PR ?",opts:["Se 95 % – Sp 95 %","Se 60-80 % – Sp 65-85 %","Se 30-40 % – Sp 99 %","Se 80-90 % – Sp 50 %"],ans:1,exp:"FR : Se = 60-80 %, Sp = 65-85 % → non spécifique et non indispensable pour le diagnostic."},
+{id:21,cat:"Examens complémentaires",diff:"B",type:"qcm",q:"Le FR est positif dans quelle proportion du syndrome de Gougerot-Sjögren ?",opts:["< 10 %","20-30 %","50-80 %","> 95 %"],ans:2,exp:"Le FR est positif dans 50-80 % des Gougerot-Sjögren, illustrant son manque de spécificité pour la PR."},
+{id:22,cat:"Examens complémentaires",diff:"B",type:"qcm",q:"Concernant le bilan radiographique initial de PR, quelle incidence est réalisée pour les pieds ?",opts:["Face seule","Face + profil","Face + 3/4","Profil seul"],ans:2,exp:"Pieds : Face + 3/4. Mains + poignets : Face seule. Thorax : Face + Profil."},
+{id:23,cat:"Examens complémentaires",diff:"B",type:"qcm",q:"Quelle est la caractéristique du liquide synovial typique de la PR ?",opts:["Hémorragique, riche en GR","Mécanique, peu de cellules","Inflammatoire, stérile, riche en PNN, sans cristaux","Infectieux avec germes à l'examen direct"],ans:2,exp:"Le liquide synovial de PR est : inflammatoire – stérile – riche en PNN – sans cristaux."},
+{id:24,cat:"Examens complémentaires",diff:"B",type:"qcm",q:"L'échographie articulaire est plus sensible que la radiographie pour détecter :",opts:["Les fractures de stress","La synovite, épanchement, érosions précoces, ténosynovites","La densité osseuse","Les calcifications tendineuses"],ans:1,exp:"L'écho détecte : synovite (mode B), épanchement, hypervascularisation (Doppler), érosions précoces, ténosynovites."},
+{id:25,cat:"Examens complémentaires",diff:"B",type:"qcm",q:"Quel bilan de biologie générale est indispensable avant de débuter un traitement par méthotrexate ?",opts:["Créatininémie seule","NFS, bilan hépatique, créatininémie","Glycémie à jeun et lipides","Aucun bilan préalable nécessaire"],ans:1,exp:"Bilan pré-MTX : NFS-plaquettes, bilan hépatique (bilirubine), albuminémie, bilan rénal, Rx thorax, ± sérologies VHB/VHC."},
+{id:26,cat:"Examens complémentaires",diff:"B",type:"qroc",q:"Quels sont les 3 éléments de la triple analyse du liquide synovial lors d'une ponction articulaire ?",ans:"1. Cytologie (riche en PNN) – 2. Examen direct + culture (éliminer une arthrite septique) – 3. Recherche de cristaux (exclure une arthrite microcristalline)",exp:"Ces 3 analyses permettent de distinguer PR, arthrite septique et arthrite microcristalline."},
+{id:27,cat:"Examens complémentaires",diff:"B",type:"qcm",q:"Quels signes radiologiques élémentaires recherche-t-on dans la PR évoluée (après 6 mois-1 an) ?",opts:["Ostéophytes et géodes","Déminéralisation en bande, érosions péri-articulaires, géodes, pincement articulaire","Calcifications périarticulaires","Ostéocondensation sous-chondrale"],ans:1,exp:"Les signes élémentaires sont : déminéralisation épiphysaire en bande, érosions péri-articulaires, géodes juxta-articulaires, pincement articulaire diffus."},
+{id:28,cat:"Examens complémentaires",diff:"C",type:"qcm",q:"Quel examen est recommandé avant l'instauration du MTX pour exclure une hépatite ?",opts:["Échographie hépatique","Sérologies VHB et VHC","Biopsie hépatique","Scanner abdominal"],ans:1,exp:"Les sérologies VHB et VHC sont recommandées si cliniquement justifié, avant l'instauration du MTX."},
+{id:29,cat:"Phase d'état",diff:"B",type:"qcm",q:"Quelle déformation correspond à la déviation ulnaire des doigts aux MCP ?",opts:["Déformation en col de cygne","Déformation en boutonnière","Déviation cubitale en coup de vent","Pouce en Z"],ans:2,exp:"La déviation cubitale (ulnaire) en coup de vent est une déformation classique de la PR évoluée."},
+{id:30,cat:"Phase d'état",diff:"B",type:"qcm",q:"La déformation 'en col de cygne' touche préférentiellement quels doigts ?",opts:["Pouce et index","2e et 3e doigts","4e et 5e doigts","Tous les doigts"],ans:1,exp:"La déformation en col de cygne touche préférentiellement les 2e et 3e doigts."},
+{id:31,cat:"Phase d'état",diff:"B",type:"qcm",q:"L'atteinte érosive du rachis cervical dans la PR concerne surtout quelle jonction ?",opts:["C5-C6","Charnière cervicooccipitale (C1-C2)","C3-C4","Jonction cervicothoracique"],ans:1,exp:"L'atteinte érosive cervicooccipitale (C1-C2) peut entraîner un diastasis et une compression médullaire cervicale haute."},
+{id:32,cat:"Phase d'état",diff:"B",type:"qcm",q:"Les nodules rhumatoïdes sont présents dans quelle proportion des PR ?",opts:["1-2 %","5-8 %","10-20 %","40-50 %"],ans:2,exp:"Les nodules rhumatoïdes sont présents dans 10-20 % des PR, surtout chez les patients avec FR et ACPA positifs."},
+{id:33,cat:"Phase d'état",diff:"B",type:"qcm",q:"Quelle est la localisation topographique la plus fréquente des nodules rhumatoïdes ?",opts:["Dos des mains uniquement","Région olécrânienne, face dorsale des doigts, tendon calcanéen","Rachis cervical uniquement","Genoux"],ans:1,exp:"Localisation : région olécrânienne, face dorsale des doigts, tendon calcanéen ou pieds."},
+{id:34,cat:"Phase d'état",diff:"B",type:"qcm",q:"Quelle est la principale manifestation pleuro-pulmonaire de la PR ?",opts:["Embolie pulmonaire","Pneumopathie interstitielle diffuse (PID)","HTAP","Asthme"],ans:1,exp:"Les PID (+++) surviennent surtout chez les hommes tabagiques avec PR nodulaire et forte positivité FR/ACPA."},
+{id:35,cat:"Phase d'état",diff:"B",type:"qcm",q:"Quelle structure est classiquement ÉPARGNÉE dans la PR ?",opts:["Genou","IPP","Articulation sacro-iliaque","Poignet"],ans:2,exp:"Seuls le rachis thoraco-lombaire et les articulations sacro-iliaques sont épargnés dans la PR."},
+{id:36,cat:"Phase d'état",diff:"B",type:"qroc",q:"Citez 4 manifestations extra-articulaires de la PR.",ans:"1. Altération de l'état général (fébricule, asthénie, amaigrissement) – 2. Syndrome sec oculo-buccal (Gougerot-Sjögren 2nd, 10-30 %) – 3. Nodules rhumatoïdes (10-20 %) – 4. Manifestations pleuro-pulmonaires (PID, pleurésies, nodules)",exp:"4 grandes catégories à retenir, ainsi que les adénopathies superficielles et le retentissement psychologique."},
+{id:37,cat:"Phase d'état",diff:"B",type:"qcm",q:"De combien d'années l'espérance de vie est-elle diminuée dans la PR ?",opts:["1-2 ans","5-10 ans","15-20 ans","Pas de diminution"],ans:1,exp:"L'espérance de vie est diminuée de 5 à 10 ans. La mortalité cardiovasculaire est augmentée (RR=1,5)."},
+{id:38,cat:"Suivi & pronostic",diff:"B",type:"qcm",q:"Quel score composite est utilisé pour évaluer l'activité de la PR et quelles en sont les composantes ?",opts:["HAQ : douleur + fonctionnel + biologie","DAS28 CRP : articulations douloureuses/28, gonflées/28, évaluation globale patient, CRP","SDAI uniquement","EVA seule"],ans:1,exp:"Le DAS28 CRP combine : articulations douloureuses/28 + articulations gonflées/28 + évaluation globale patient (0-100) + CRP."},
+{id:39,cat:"Suivi & pronostic",diff:"B",type:"qcm",q:"Quels sont les seuils du DAS28 pour rémission, faible activité, activité modérée, forte activité ?",opts:["< 2,6 / 2,6-3,2 / 3,2-5,1 / > 5,1","< 1 / 1-2 / 2-4 / > 4","< 3 / 3-4 / 4-6 / > 6","< 2 / 2-3,5 / 3,5-5 / > 5"],ans:0,exp:"Rémission : DAS < 2,6 / Faiblement active : 2,6-3,2 / Modérément active : 3,2-5,1 / Très active : > 5,1."},
+{id:40,cat:"Suivi & pronostic",diff:"B",type:"qcm",q:"Quel score fonctionnel est un facteur de mauvais pronostic si > 0,5 ?",opts:["DAS28","HAQ (Health Assessment Questionnaire)","SDAI","EVA"],ans:1,exp:"Le HAQ > 0,5 est un facteur de mauvais pronostic fonctionnel."},
+{id:41,cat:"Suivi & pronostic",diff:"B",type:"qcm",q:"À quelle fréquence réalise-t-on les radios de suivi (mains + poignets + pieds) dans la PR ?",opts:["À 6 mois, puis /an × 3 ans, puis /3 ans","Tous les 3 mois","Tous les 2 ans","Annuellement dès le début"],ans:0,exp:"Bilan radiologique : + 6 mois – /an × 3 ans – /3 ans ensuite."},
+{id:42,cat:"Suivi & pronostic",diff:"B",type:"qcm",q:"Parmi les éléments suivants, lequel N'EST PAS un facteur de mauvais pronostic ?",opts:["FR et/ou ACPA positifs surtout > 3N","Présence d'érosions radiologiques","DAS28 < 2,6 persistant","Syndrome inflammatoire biologique intense"],ans:2,exp:"Un DAS28 < 2,6 correspond à la RÉMISSION, c'est donc un bon signe. Les autres sont des facteurs de mauvais pronostic."},
+{id:43,cat:"Suivi & pronostic",diff:"B",type:"qroc",q:"Quelles comorbidités sont augmentées dans la PR ? Citez-en 4.",ans:"1. Cardiovasculaire (AVC, coronaropathie, RR=1,5) – 2. Cancers (lymphomes RR=2, cancer poumon) – 3. Infections (voies aériennes, urinaires, peau) – 4. Ostéoporose",exp:"La PR est un FdR CV indépendant. Les infections sont favorisées par la maladie et les traitements."},
+{id:44,cat:"Suivi & pronostic",diff:"B",type:"qcm",q:"En suivi biologique, quel examen permet d'évaluer la tolérance des AINS sur la fonction rénale ?",opts:["Bilan hépatique","NFS","Créatininémie","Glycémie à jeun"],ans:2,exp:"La créatininémie surveille la tolérance rénale des AINS. La glycémie à jeun surveille la tolérance des corticoïdes."},
+{id:45,cat:"Suivi & pronostic",diff:"B",type:"qcm",q:"Concernant la PR et la grossesse, quelle affirmation est exacte ?",opts:["La PR s'aggrave pendant la grossesse","La PR s'améliore transitoirement pendant la grossesse","Pas d'effet de la grossesse sur la PR","La PR contre-indique la grossesse"],ans:1,exp:"La PR s'améliore transitoirement pendant la grossesse (comme la SEP). Le lupus et le SAPL s'aggravent."},
+{id:46,cat:"Traitement",diff:"B",type:"qcm",q:"Quel est le traitement de fond de 1ère ligne de la PR en l'absence de contre-indication ?",opts:["Léflunomide","Sulfasalazine","Méthotrexate","Hydroxychloroquine"],ans:2,exp:"Le MTX est le csDMARD de référence, initié le plus précocement possible."},
+{id:47,cat:"Traitement",diff:"B",type:"qcm",q:"Si le MTX est initié dans les 3 premiers mois, quel taux de rémission peut-on espérer ?",opts:["10 %","30 %","50 %","80 %"],ans:2,exp:"MTX initié dans les 3 mois : 50 % de rémission. Dans les 6 mois : seulement 10 % de rémission."},
+{id:48,cat:"Traitement",diff:"B",type:"qcm",q:"Quelle est la dose optimale du méthotrexate dans la PR ?",opts:["5-10 mg/semaine","15-25 mg/semaine (0,3 mg/kg/sem)","30-40 mg/semaine","50 mg toutes les 2 semaines"],ans:1,exp:"Dose optimale : 15-25 mg/semaine (0,3 mg/kg/sem), atteinte en 4-8 semaines par paliers de 5 mg."},
+{id:49,cat:"Traitement",diff:"B",type:"qcm",q:"Combien de temps après le MTX doit-on administrer les folates ?",opts:["Simultanément","12h après","24 à 48h après","1 semaine après"],ans:2,exp:"L'acide folique 5 mg/semaine est administré 24 à 48h après le MTX pour limiter les effets indésirables."},
+{id:50,cat:"Traitement",diff:"B",type:"qcm",q:"Quelle est la contre-indication rénale au méthotrexate ?",opts:["DFG < 60 ml/min","DFG < 30 ml/min","DFG < 20 ml/min","Toute insuffisance rénale"],ans:2,exp:"Le MTX est contre-indiqué si DFG < 20 ml/min (insuffisance rénale sévère)."},
+{id:51,cat:"Traitement",diff:"B",type:"qcm",q:"En cas de contre-indication au MTX, quels sont les csDMARD alternatifs de 1ère ligne ?",opts:["Rituximab ou Tocilizumab","Léflunomide 20 mg/j ou Sulfasalazine 2-3 g/j","Prednisone seule","Anti-TNF d'emblée"],ans:1,exp:"En cas de CI au MTX : Léflunomide 20 mg/j ou Sulfasalazine 2-3 g/j (± corticoïdes faible dose)."},
+{id:52,cat:"Traitement",diff:"B",type:"qcm",q:"Quels agents biologiques (bDMARD) sont utilisés en 2e ligne dans la PR ?",opts:["Anti-IL1 uniquement","Anti-TNF, Abatacept, Tocilizumab, Rituximab (si CI), Anakinra","Rituximab en 1ère intention","MTX en association exclusive"],ans:1,exp:"Les bDMARD de 2e ligne : Anti-TNF, Abatacept (CTLA4-Ig), Tocilizumab (anti-IL6R), Anakinra (anti-IL1), Rituximab (anti-CD20 si CI)."},
+{id:53,cat:"Traitement",diff:"B",type:"qcm",q:"Quel est le mécanisme d'action du Rituximab ?",opts:["Anti-TNF alpha","Anti-IL6 récepteur","Anti-CD20 (déplétion lymphocytes B)","CTLA4-Ig"],ans:2,exp:"Rituximab = anti-CD20, déplétion des lymphocytes B. Abatacept = CTLA4-Ig. Tocilizumab = anti-IL6R."},
+{id:54,cat:"Traitement",diff:"B",type:"qcm",q:"Les corticoïdes sont recommandés dans la PR à quel moment et à quelle dose ?",opts:["En continu à forte dose","Dans l'attente de l'efficacité du traitement de fond, faible dose, max 6 mois","Uniquement en bolus IV lors des poussées sévères","Jamais dans la PR"],ans:1,exp:"Corticoïdes : faible dose, courte durée (≤ 6 mois), en pont dans l'attente du traitement de fond. Monoprise matinale."},
+{id:55,cat:"Traitement",diff:"B",type:"qcm",q:"En cas d'infection chez un patient sous biothérapie, quelle conduite adopter ?",opts:["Poursuivre toutes les thérapies","Arrêter tous les traitements y compris les corticoïdes","Arrêt ponctuel de la biothérapie/immunosuppresseur MAIS PAS les corticoïdes","Doubler la dose de corticoïdes"],ans:2,exp:"Arrêt ponctuel des bDMARD et csDMARD mais PAS des corticoïdes (risque d'insuffisance surrénale aiguë)."},
+{id:56,cat:"Traitement",diff:"B",type:"qroc",q:"Citez 5 contre-indications au méthotrexate.",ans:"Grossesse/allaitement – Insuffisance hépatique sévère – Alcoolisme – DFG < 20 ml/min – Dyscrasies sanguines (leucopénie, thrombopénie…) – Infections graves (TB, VIH) – Ulcères buccaux/gastro-intestinaux – Vaccins vivants concomitants",exp:"8 contre-indications principales. La grossesse et l'alcoolisme sont les plus importantes à retenir aux ECN."},
+{id:57,cat:"Traitement",diff:"B",type:"qcm",q:"Quel bilan est recommandé avant l'instauration du MTX ?",opts:["NFS, bilan hépatique, bilan rénal, Rx thorax, ± sérologies VHB/VHC","Échographie abdominale, IRM cérébrale","Bilan lipidique seul","Aucun bilan préthérapeutique nécessaire"],ans:0,exp:"Bilan pré-MTX : NFS-plaquettes, bilan hépatique (bilirubine), albuminémie, bilan rénal, radiographie thoracique, ± sérologies VHB/VHC."},
+{id:58,cat:"Traitement",diff:"B",type:"qcm",q:"Quelle est la fréquence du bilan biologique sous MTX pendant les 6 premiers mois ?",opts:["Tous les 6 mois","Au moins 1 fois par mois","Tous les 3 mois","Tous les 2 semaines"],ans:1,exp:"Au moins 1 fois par mois pendant les 6 premiers mois, puis tous les 2-3 mois (NFS, bilan hépatique, bilan rénal)."},
+{id:59,cat:"Traitement",diff:"B",type:"qroc",q:"Quels sont les 3 objectifs du traitement de la PR ?",ans:"1. Soulager la douleur – 2. Stopper l'évolution de la maladie (DAS28 ≤ 2,6) – 3. Prévenir le handicap",exp:"Triple objectif. L'objectif principal est la rémission définie par un DAS28 < 2,6."},
+{id:60,cat:"Traitement",diff:"B",type:"qcm",q:"Dans la réadaptation de la PR, quel dispositif est indiqué EN POUSSÉE pour soulager les articulations ?",opts:["Orthèse de fonction","Orthèse de repos","Semelles orthopédiques définitives","Grand appareillage"],ans:1,exp:"En poussée : orthèses de repos, application de froid, mobilisations passives. Hors poussée : renforcement musculaire, lutte contre l'enraidissement."}
+];
+
+let mode='all', questions=[], idx=0, score=0, wrongIds=[], answered=false, catStats={};
+
+function setMode(m, el) {
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function getQs() {
+  if (mode === 'qcm') return ALL_Q.filter(q => q.type === 'qcm');
+  if (mode === 'qroc') return ALL_Q.filter(q => q.type === 'qroc');
+  return [...ALL_Q];
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function startQuiz() {
+  questions = shuffle(getQs());
+  idx = 0; score = 0; wrongIds = []; catStats = {};
+  questions.forEach(q => { catStats[q.cat] = { total: 0, correct: 0 }; });
+  document.getElementById('screen-start').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'block';
+  renderQ();
+}
+
+function renderQ() {
+  answered = false;
+  const q = questions[idx];
+  const pct = Math.round((idx / questions.length) * 100);
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = (idx + 1) + ' / ' + questions.length;
+  document.getElementById('prog-score').textContent = score + ' correct' + (score > 1 ? 's' : '');
+  document.getElementById('badge-row').innerHTML =
+    '<span class="badge badge-cat">' + q.cat + '</span>' +
+    '<span class="badge badge-rang-' + q.diff + '">Rang ' + q.diff + '</span>' +
+    '<span class="badge badge-type">' + (q.type === 'qcm' ? 'QCM' : 'QROC') + '</span>';
+  document.getElementById('q-text').textContent = q.q;
+  const body = document.getElementById('q-body');
+  const fb = document.getElementById('feedback');
+  fb.style.display = 'none'; fb.className = 'feedback-box';
+  document.getElementById('actions').innerHTML = '';
+  if (q.type === 'qcm') {
+    body.innerHTML = '<div class="options">' + q.opts.map((o, i) =>
+      '<button class="opt" onclick="pickOpt(' + i + ')" data-idx="' + i + '">' + o + '</button>'
+    ).join('') + '</div>';
+  } else {
+    body.innerHTML = '<textarea class="qroc" id="qroc-ans" placeholder="Votre réponse..."></textarea>';
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-primary'; btn.textContent = 'Voir la réponse';
+    btn.onclick = showQroc;
+    document.getElementById('actions').appendChild(btn);
+  }
+}
+
+function pickOpt(chosen) {
+  if (answered) return;
+  answered = true;
+  const q = questions[idx];
+  catStats[q.cat].total++;
+  document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+  const fb = document.getElementById('feedback');
+  fb.style.display = 'block';
+  if (chosen === q.ans) {
+    score++;
+    catStats[q.cat].correct++;
+    document.querySelectorAll('.opt')[chosen].className = 'opt correct';
+    fb.className = 'feedback-box feedback-ok';
+    fb.innerHTML = '<strong>Correct !</strong> ' + q.exp;
+  } else {
+    wrongIds.push(q.id);
+    document.querySelectorAll('.opt')[chosen].className = 'opt wrong';
+    document.querySelectorAll('.opt')[q.ans].className = 'opt reveal';
+    fb.className = 'feedback-box feedback-ko';
+    fb.innerHTML = '<strong>Incorrect.</strong> Bonne réponse : <em>' + q.opts[q.ans] + '</em><br>' + q.exp;
+  }
+  document.getElementById('prog-score').textContent = score + ' correct' + (score > 1 ? 's' : '');
+  const btn = document.createElement('button');
+  btn.className = 'btn btn-primary';
+  btn.textContent = idx < questions.length - 1 ? 'Question suivante →' : 'Voir les résultats';
+  btn.onclick = advance;
+  document.getElementById('actions').appendChild(btn);
+}
+
+function showQroc() {
+  answered = true;
+  const q = questions[idx];
+  catStats[q.cat].total++;
+  const fb = document.getElementById('feedback');
+  fb.style.display = 'block';
+  fb.className = 'feedback-box feedback-neutral';
+  fb.innerHTML = '<strong>Réponse attendue :</strong><br>' + q.ans + '<br><br><em>' + q.exp + '</em>';
+  document.getElementById('actions').innerHTML = '';
+  const ok = document.createElement('button');
+  ok.className = 'btn btn-success'; ok.textContent = '✓ Je savais';
+  ok.onclick = () => { score++; catStats[q.cat].correct++; document.getElementById('prog-score').textContent = score + ' corrects'; advance(); };
+  const ko = document.createElement('button');
+  ko.className = 'btn btn-danger'; ko.textContent = '✗ Je ne savais pas';
+  ko.onclick = () => { wrongIds.push(q.id); advance(); };
+  document.getElementById('actions').append(ok, ko);
+}
+
+function advance() {
+  idx++;
+  if (idx >= questions.length) showEnd();
+  else renderQ();
+}
+
+function showEnd() {
+  document.getElementById('screen-quiz').style.display = 'none';
+  document.getElementById('screen-end').style.display = 'block';
+  const pct = Math.round((score / questions.length) * 100);
+  document.getElementById('final-score').textContent = score + ' / ' + questions.length;
+  document.getElementById('final-pct').textContent = pct + '% de réussite';
+  document.getElementById('final-msg').textContent = pct >= 80 ? 'Excellent travail !' : pct >= 60 ? 'Bien, continuez !' : pct >= 40 ? 'À retravailler' : 'À reprendre depuis le début';
+  document.getElementById('end-grid').innerHTML = Object.entries(catStats).map(([cat, s]) => {
+    const p = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+    return '<div class="end-cat"><div class="end-cat-name">' + cat + '</div><div class="end-cat-val">' + p + '% <span style="font-size:0.8rem;font-weight:400;color:var(--muted)">(' + s.correct + '/' + s.total + ')</span></div></div>';
+  }).join('');
+}
+
+function restartAll() {
+  document.getElementById('screen-end').style.display = 'none';
+  document.getElementById('screen-start').style.display = 'block';
+}
+
+function restartWrong() {
+  if (!wrongIds.length) { alert('Aucune erreur à retravailler !'); return; }
+  questions = shuffle(ALL_Q.filter(q => wrongIds.includes(q.id)));
+  idx = 0; score = 0; wrongIds = []; catStats = {};
+  questions.forEach(q => { catStats[q.cat] = { total: 0, correct: 0 }; });
+  document.getElementById('screen-end').style.display = 'none';
+  document.getElementById('screen-quiz').style.display = 'block';
+  renderQ();
+}
+</script>
+</body>
+</html>
